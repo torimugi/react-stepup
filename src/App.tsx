@@ -1,4 +1,4 @@
-import './App.css'
+import "tailwindcss";
 
 function App() {
 
@@ -10,11 +10,15 @@ function App() {
 
   return (
     <>
-<h1>学習記録一覧</h1>
 <div>
+<h1>学習記録一覧</h1>
+  <div>
+ <p>学習内容<input type="text" /></p>
+ <p>学習時間<input type="number" />時間</p>
+  </div>
 {recordsrecords.map((record) => {
 return(
-  <p>{record.title} {record.time}時間</p>
+  <div>{record.title} {record.time}時間</div>
 )
 })}
 </div>
@@ -22,4 +26,4 @@ return(
 
 )
 }
-export default App;
+export default App; 
