@@ -11,11 +11,13 @@ function App() {
   return (
     <>
 <h1>学習記録一覧</h1>
+<div>
 {recordsrecords.map((record) => {
 return(
-  <p>{record.title}</p>
+  <p>{record.title} {record.time}時間</p>
 )
 })}
+</div>
 </>
 
 )
