@@ -29,6 +29,7 @@ const handleChangeTime = (e: React.ChangeEvent<HTMLInputElement>) => {
  <div>学習時間<input type="number" value={studyTime} onChange= {handleChangeTime}/>時間</div>
  <div>入力されている学習内容：{studyText}</div>
  <div>入力されている時間：{studyTime}時間</div>
+ <button>登録</button>
   </div>
 
 {recordsrecords.map((record) => {
