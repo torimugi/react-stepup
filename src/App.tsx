@@ -17,6 +17,7 @@ const handleChangeTime = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const onSubmit = () => {
 const newStudy = {
+  id:Date.now(),
   studyText:studyText,
   studyTime:studyTime
 }
@@ -37,7 +38,7 @@ console.log(newRecord);
  {records.map((record) => {
 return(
   
-  <div key={record}>{record.studyText}{record.studyTime}時間</div>
+  <div key={record.id}>{record.studyText}{record.studyTime}時間</div>
 )
 })}
  <button onClick={() => onSubmit()}>登録 </button>
