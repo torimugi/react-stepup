@@ -26,10 +26,14 @@ const newRecord = [...records,newStudy]
 setRecords(newRecord);
 setStudyText("");
 setStudyTime(0);
+const error = () => {
+  if(studyText === "" || studyTime === 0) {
+    setError("入力されていない項目があります");
+    return
+  }
+}
+error();
 };
-
-
-
 
   return (
     <>
@@ -46,9 +50,7 @@ return(
 )
 })}
  <button onClick={() => onSubmit()}>登録</button>
- {records.length > 0 && (
-  <div >入力されていない項目があります</div>)
-  }
+ <div>{error}</div>
   </div>
 </div>
 </>
