@@ -6,6 +6,7 @@ function App() {
 const [records, setRecords] = useState<any[]>([]);
 const [studyText, setStudyText] = useState<string>("");
 const [studyTime, setStudyTime] = useState<number>(0);
+const [error, setError] = useState<string>("");
 
 const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
   setStudyText(e.target.value);
@@ -27,6 +28,9 @@ setStudyText("");
 setStudyTime(0);
 };
 
+
+
+
   return (
     <>
 <div>
@@ -38,14 +42,14 @@ setStudyTime(0);
  <div>入力されている時間：{studyTime}時間</div>
  {records.map((record) => {
 return(
-  
   <div key={record.id}>{record.studyText}{record.studyTime}時間</div>
 )
 })}
- <button onClick={() => onSubmit()}>登録 </button>
+ <button onClick={() => onSubmit()}>登録</button>
+ {records.length > 0 && (
+  <div >入力されていない項目があります</div>)
+  }
   </div>
-
-
 </div>
 </>
 )
