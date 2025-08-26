@@ -23,7 +23,8 @@ const newStudy = {
 }
 const newRecord = [...records,newStudy]
 setRecords(newRecord);
-console.log(newRecord);
+setStudyText("");
+setStudyTime(0);
 };
 
   return (
