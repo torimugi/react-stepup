@@ -25,6 +25,7 @@ const newRecord = [...records,newStudy]
 setRecords(newRecord);
 setStudyText("");
 setStudyTime(0);
+
 const error = () => {
   if(studyText === "" || studyTime === 0) {
     setError("入力されていない項目があります");
@@ -36,8 +37,11 @@ const error = () => {
   }  
 }
 error();
-console.log(newRecord);
 };
+
+const totalStudyTime = records.reduce((total, record) => {
+  return total + parseInt(record.studyTime)}, 0);
+console.log(totalStudyTime);
 
   return (
     <>
@@ -54,6 +58,8 @@ return(
 )
 })}
  <button onClick={() => onSubmit()}>登録</button>
+ <div>合計時間：{totalStudyTime}/1000(h)</div>
+
  <div>{error}</div>
   </div>
 </div>
