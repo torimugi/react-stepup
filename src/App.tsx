@@ -2,7 +2,6 @@ import "tailwindcss";
 import { useState } from "react";
 
 function App() {
-
 const [records, setRecords] = useState<any[]>([]);
 const [studyText, setStudyText] = useState<string>("");
 const [studyTime, setStudyTime] = useState<number>(0);
@@ -29,10 +28,15 @@ setStudyTime(0);
 const error = () => {
   if(studyText === "" || studyTime === 0) {
     setError("入力されていない項目があります");
+    setRecords([]);
     return
-  }
+  } else if (studyText !== "" && studyTime > 0) {
+    setError("");
+    return
+  }  
 }
 error();
+console.log(newRecord);
 };
 
   return (
