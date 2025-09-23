@@ -1,8 +1,13 @@
-import "tailwindcss";
 import { useState } from "react";
 
+interface Record {
+  id: number;
+  studyText: string;
+  studyTime: number;
+}
+
 function App() {
-const [records, setRecords] = useState<any[]>([]);
+const [records, setRecords] = useState<Record[]>([]);
 const [studyText, setStudyText] = useState<string>("");
 const [studyTime, setStudyTime] = useState<number>(0);
 const [error, setError] = useState<string>("");
@@ -40,8 +45,7 @@ error();
 };
 
 const totalStudyTime = records.reduce((total, record) => {
-  return total + parseInt(record.studyTime)}, 0);
-console.log(totalStudyTime);
+  return total + record.studyTime}, 0);
 
   return (
     <>
@@ -59,7 +63,6 @@ return(
 })}
  <button onClick={() => onSubmit()}>登録</button>
  <div>合計時間：{totalStudyTime}/1000(h)</div>
-
  <div>{error}</div>
   </div>
 </div>
