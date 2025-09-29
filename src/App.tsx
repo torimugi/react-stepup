@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import getAllTodos from "./utils/supabaseFunction";
 
 interface Record {
   id: number;
@@ -11,6 +12,7 @@ const [records, setRecords] = useState<Record[]>([]);
 const [studyText, setStudyText] = useState<string>("");
 const [studyTime, setStudyTime] = useState<number>(0);
 const [error, setError] = useState<string>("");
+const [todos, setTodos] = useState<null | string[]>([]);
 
 const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
   setStudyText(e.target.value);
@@ -43,6 +45,14 @@ const error = () => {
 }
 error();
 };
+
+useEffect(() => {
+  const getTodos = async () => {
+    const todos = await getAllTodos();
+    setTodos(todos);
+  };
+  getTodos();
+}, []);
 
 const totalStudyTime = records.reduce((total, record) => {
   return total + record.studyTime}, 0);
