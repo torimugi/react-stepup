@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import getAllTodos from "./utils/supabaseFunction";
+import { useState, useEffect } from "react";
+import supabase from "./utils/supabaseClient";
+import { getAllTodos } from "./utils/supabaseData";
 
 interface Record {
   id: number;
@@ -12,7 +13,8 @@ const [records, setRecords] = useState<Record[]>([]);
 const [studyText, setStudyText] = useState<string>("");
 const [studyTime, setStudyTime] = useState<number>(0);
 const [error, setError] = useState<string>("");
-const [todos, setTodos] = useState<null | string[]>([]);
+const [title, setTitle] = useState<string>("");
+const [time, setTime] = useState<number>(0);
 
 const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
   setStudyText(e.target.value);
@@ -46,12 +48,23 @@ const error = () => {
 error();
 };
 
+// データを追加する
+const onClickAdd = async() => {
+const { error } = await supabase
+  .from('study-records')
+  .insert({ title: title, time: time });
+  if (error) {
+      console.error("データ追加エラー:", error);
+    return;
+  }
+
+await getAllTodos();
+setTitle("");
+setTime(0);
+}
+
 useEffect(() => {
-  const getTodos = async () => {
-    const todos = await getAllTodos();
-    setTodos(todos);
-  };
-  getTodos();
+  getAllTodos();
 }, []);
 
 const totalStudyTime = records.reduce((total, record) => {
@@ -72,12 +85,15 @@ return(
 )
 })}
  <button onClick={() => onSubmit()}>登録</button>
+ <button onClick={() => onClickAdd()}>追加</button>
  <div>合計時間：{totalStudyTime}/1000(h)</div>
  <div>{error}</div>
+
+ 
   </div>
 </div>
 </>
 )
 }
 
-export default App; 
+export default App;
