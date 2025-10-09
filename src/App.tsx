@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import supabase from "./utils/supabaseClient";
+import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
 import { getAllTodos } from "./utils/supabaseData";
+
 
 interface Record {
   id: number;
@@ -51,7 +52,7 @@ error();
 // データを追加する
 const onClickAdd = async() => {
 const { error } = await supabase
-  .from('study-records')
+  .from('study-record')
   .insert({ title: title, time: time });
   if (error) {
       console.error("データ追加エラー:", error);
@@ -64,6 +65,17 @@ setTime(0);
 }
 
 useEffect(() => {
+  const getAllTodos = async () => {
+    const { data, error } = await supabase
+      .from('study-record')
+      .select('*');
+    if (error) {
+      console.error("データ取得エラー:", error);
+      return;
+    }
+    setRecords(data);
+    console.log("fetched data:", data);
+  };
   getAllTodos();
 }, []);
 
