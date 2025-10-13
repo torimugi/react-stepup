@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
-import { getAllTodos } from "./utils/supabaseData";
+// import { getAllTodos } from "./utils/supabaseData";
 
 
 interface Record {
   id: number;
-  studyText: string;
-  studyTime: number;
+  text: string;
+  time: number;
 }
 
 function App() {
 const [records, setRecords] = useState<Record[]>([]);
-const [studyText, setStudyText] = useState<string>("");
-const [studyTime, setStudyTime] = useState<number>(0);
+const [text, setText] = useState<string>("");
+const [time, setStudyTime] = useState<number>(0);
 const [error, setError] = useState<string>("");
-const [title, setTitle] = useState<string>("");
-const [time, setTime] = useState<number>(0);
+// const [title, setTitle] = useState<string>("");
+// const [time, setTime] = useState<number>(0);
 
 const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setStudyText(e.target.value);
+  setText(e.target.value);
 };
 
 const handleChangeTime = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,20 +28,20 @@ const handleChangeTime = (e: React.ChangeEvent<HTMLInputElement>) => {
 const onSubmit = () => {
 const newStudy = {
   id:Date.now(),
-  studyText:studyText,
-  studyTime:studyTime
+  text:text,
+  time:time
 }
 const newRecord = [...records,newStudy]
 setRecords(newRecord);
-setStudyText("");
+setText("");
 setStudyTime(0);
 
 const error = () => {
-  if(studyText === "" || studyTime === 0) {
+  if(text === "" || time === 0) {
     setError("入力されていない項目があります");
     setRecords([]);
     return
-  } else if (studyText !== "" && studyTime > 0) {
+  } else if (text !== "" && time > 0) {
     setError("");
     return
   }  
@@ -49,55 +49,57 @@ const error = () => {
 error();
 };
 
-// データを追加する
-const onClickAdd = async() => {
-const { error } = await supabase
-  .from('study-record')
-  .insert({ title: title, time: time });
-  if (error) {
-      console.error("データ追加エラー:", error);
-    return;
-  }
+// // データを追加する
+// const onClickAdd = async() => {
+// const { error } = await supabase
+//   .from('study-record')
+//   .insert({ title: title, time: time });
+//   if (error) {
+//       console.error("データ追加エラー:", error);
+//     return;
+//   }
 
-await getAllTodos();
-setTitle("");
-setTime(0);
-}
+// await getAllTodos();
+// setTitle("");
+// setTime(0);
+// }
 
-useEffect(() => {
-  const getAllTodos = async () => {
+// データを取得する
+  const fetchData = async () => {
     const { data, error } = await supabase
       .from('study-record')
       .select('*');
     if (error) {
-      console.error("データ取得エラー:", error);
+      console.log("data:", data); 
       return;
     }
     setRecords(data);
-    console.log("fetched data:", data);
+    console.log("data:", data);
   };
-  getAllTodos();
-}, []);
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 const totalStudyTime = records.reduce((total, record) => {
-  return total + record.studyTime}, 0);
+  return total + record.time}, 0);
 
   return (
     <>
 <div>
 <h1>学習記録一覧</h1>
   <div>
- <div>学習内容<input type="text" value={studyText} onChange= {handleChangeText}/></div>
- <div>学習時間<input type="number" value={studyTime} onChange= {handleChangeTime}/>時間</div>
- <div>入力されている学習内容：{studyText}</div>
- <div>入力されている時間：{studyTime}時間</div>
+ <div>学習内容<input type="text" value={text} onChange= {handleChangeText}/></div>
+ <div>学習時間<input type="number" value={time} onChange= {handleChangeTime}/>時間</div>
+ <div>入力されている学習内容：{text}</div>
+ <div>入力されている時間：{time}時間</div>
  {records.map((record) => {
 return(
-  <div key={record.id}>{record.studyText}{record.studyTime}時間</div>
+  <div key={record.id}>{record.text}{record.time}時間</div>
 )
 })}
  <button onClick={() => onSubmit()}>登録</button>
- <button onClick={() => onClickAdd()}>追加</button>
+ {/* <button onClick={() => onClickAdd()}>追加</button> */}
  <div>合計時間：{totalStudyTime}/1000(h)</div>
  <div>{error}</div>
 
