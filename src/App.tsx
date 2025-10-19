@@ -12,6 +12,7 @@ const [records, setRecords] = useState<Record[]>([]);
 const [title, setTitle] = useState<string>("");
 const [time, setStudyTime] = useState<number>(0);
 const [error, setError] = useState<string>("");
+const [isLoading, setLoading] = useState<boolean>(false);
 
 const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
   setTitle(e.target.value);
@@ -62,6 +63,23 @@ error();
     fetchData();
   }, []);
 
+  // ローディング状態を表示
+  useEffect(() => {
+    const getIsTodo = async () => { // 非同期処理を定義する関数
+      setLoading(true); // データを取得する前にローディング状態にする
+      const todoDate = await fetchData(); // データを取得するまで待つ
+      setLoading(false);
+      return todoDate;
+      // データを取得した後にローディング状態を解除する
+    };
+    getIsTodo(); // 非同期処理を実行する関数
+}
+, []);
+if (isLoading) {
+  return <div>Loading...</div>; // ローディング状態であればLoading...を表示
+}
+
+
 const totalStudyTime = records.reduce((total, record) => {
   return total + record.time}, 0);
 
@@ -70,8 +88,8 @@ const totalStudyTime = records.reduce((total, record) => {
 <div>
 <h1>学習記録一覧</h1>
   <div>
- <div>学習内容<input type="text" value={title} onChange= {handleChangeTitle}/></div>
- <div>学習時間<input type="number" value={time} onChange= {handleChangeTime}/>時間</div>
+ <div>学習内容<input type="text" value={title} onChange={handleChangeTitle}/></div>
+ <div>学習時間<input type="number" value={time} onChange={handleChangeTime}/>時間</div>
  <div>入力されている学習内容：{title}</div>
  <div>入力されている時間：{time}時間</div>
  {records.map((record) => {
