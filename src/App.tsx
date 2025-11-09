@@ -97,7 +97,9 @@ const totalStudyTime = records.reduce((total, record) => {
  <div>入力されている時間：{time}時間</div>
  {records.map((record) => {
 return(
-  <div key={record.id}>{record.title}{record.time}時間</div>
+  <div className="flex justify-center" key={record.id}>{record.title}{record.time}時間
+  <button>削除</button>
+</div>
 )
 })}
  <button onClick={() => onSubmit()}>登録</button>
