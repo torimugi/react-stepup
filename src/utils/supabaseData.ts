@@ -6,5 +6,10 @@ export const getAllTodos = async () => {
     return todos.data;
 };
 
-
+// study-record テーブルに、レコードを追加する
+export const insertTodo = async (title: string, time: number) => {
+await supabase
+  .from('study-record')
+  .insert({ title, time });
+};
 

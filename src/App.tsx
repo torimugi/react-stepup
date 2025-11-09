@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
+import { insertTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
 
 interface Record {
   id: number;
@@ -23,25 +24,28 @@ const handleChangeTime = (e: React.ChangeEvent<HTMLInputElement>) => {
   setStudyTime(Number(e.target.value));
 };
 
-const onSubmit = () => {
-const newStudy = {
-  id:Date.now(),
-  title:title,
-  time:time
-}
-const newRecord = [...records,newStudy]
-setRecords(newRecord);
-setTitle("");
-setStudyTime(0);
+// TODOの追加処理
+const onSubmit = async () => {
+  const newStudy = {
+    id: Date.now(),
+    title: title,
+    time: time
+  };
+  await insertTodo(title, time);
+  const newRecord = [...records, newStudy];
+  setRecords(newRecord);
+  setTitle("");
+  setStudyTime(0);
 
-const error = () => {
-  if(title === "" || time === 0) {
-    setError("入力されていない項目があります");
-    setRecords([]);
-    return
-  } else if (title !== "" && time > 0) {
-    setError("");
-    return
+  // 入力値のバリデーション処理
+  const error = () => {
+    if (title === "" || time === 0) {
+      setError("入力されていない項目があります");
+      setRecords([]);
+      return;
+    } else if (title !== "" && time > 0) {
+      setError("");
+      return;
   }  
 }
 error();
@@ -78,7 +82,6 @@ error();
 if (isLoading) {
   return <div>Loading...</div>; // ローディング状態であればLoading...を表示
 }
-
 
 const totalStudyTime = records.reduce((total, record) => {
   return total + record.time}, 0);
