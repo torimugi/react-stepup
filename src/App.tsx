@@ -67,6 +67,12 @@ error();
     fetchData();
   }, []);
 
+  // 削除処理
+  const deleteTodo = (id: number) => {
+    const newDelete = records.filter((record) => record.id !== id);
+    setRecords(newDelete);
+  }
+
   // ローディング状態を表示
   useEffect(() => {
     const getIsTodo = async () => { // 非同期処理を定義する関数
@@ -98,7 +104,7 @@ const totalStudyTime = records.reduce((total, record) => {
  {records.map((record) => {
 return(
   <div className="flex justify-center" key={record.id}>{record.title}{record.time}時間
-  <button>削除</button>
+  <button onClick={() => deleteTodo(record.id)}>削除</button>
 </div>
 )
 })}
