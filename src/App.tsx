@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
 import { insertTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
 
+
 interface Record {
   id: number;
   title: string;
@@ -69,8 +70,9 @@ error();
 
   // 削除処理
   const deleteTodo = (id: number) => {
-    const newDelete = records.filter((record) => record.id !== id);
-    setRecords(newDelete);
+    const newRecords = [...records];
+    newRecords.splice(id, 1);
+    setRecords(newRecords);
   }
 
   // ローディング状態を表示
