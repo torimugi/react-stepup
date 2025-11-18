@@ -70,9 +70,10 @@ error();
 
   // 削除処理
   const deleteTodo = (id: number) => {
-    const newRecords = [...records];
-    newRecords.splice(id, 1);
-    setRecords(newRecords);
+    const newDelete = [...records];
+    newDelete.splice(id, 1);
+    setRecords(newDelete);
+    
   }
 
   // ローディング状態を表示
