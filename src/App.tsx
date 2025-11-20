@@ -70,11 +70,10 @@ error();
 
   // 削除処理
   const deleteTodo = (id: number) => {
-    const newDelete = [...records];
-    newDelete.splice(id, 1);
+    console.log("削除ID:", id);
+    const newDelete = [...records].filter((record) => record.id !== id);
     setRecords(newDelete);
-    
-  }
+  };
 
   // ローディング状態を表示
   useEffect(() => {
