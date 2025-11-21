@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
 import { insertTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
+import { deleteTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
 
 
 interface Record {
@@ -69,9 +70,9 @@ error();
   }, []);
 
   // 削除処理
-  const deleteTodo = (id: number) => {
-    console.log("削除ID:", id);
-    const newDelete = [...records].filter((record) => record.id !== id);
+  const handleDeleteTodo = async(id: number) => {
+    await deleteTodo(id);
+    const newDelete = records.filter((record) => record.id !== id);
     setRecords(newDelete);
   };
 
@@ -106,7 +107,7 @@ const totalStudyTime = records.reduce((total, record) => {
  {records.map((record) => {
 return(
   <div className="flex justify-center" key={record.id}>{record.title}{record.time}時間
-  <button onClick={() => deleteTodo(record.id)}>削除</button>
+  <button onClick={() => handleDeleteTodo(record.id)}>削除</button>
 </div>
 )
 })}

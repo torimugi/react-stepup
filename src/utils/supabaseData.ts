@@ -15,9 +15,9 @@ await supabase
 
 // study-record テーブルに、レコードを削除する
 export const deleteTodo = async (id: number) => {
-  const response = await supabase
-    .from('study-record')
-    .delete()
-    .eq('id', id);
-  return response;
-}
+await supabase
+  .from('study-record')
+  .delete()
+  .eq('id', id)
+  .select();
+  };
