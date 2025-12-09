@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
-import { insertTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
-import { deleteTodo } from "/home/yu/Projects/react-stepup/src/utils/supabaseData";
+import { supabase } from "./utils/supabaseClient";
+import { insertTodo } from "./utils/supabaseData";
+import { deleteTodo } from "./utils/supabaseData";
 
 
 interface Record {
