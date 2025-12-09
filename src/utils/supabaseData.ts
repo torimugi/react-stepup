@@ -1,4 +1,4 @@
-import { supabase } from "/home/yu/Projects/react-stepup/src/utils/supabaseClient";
+import { supabase } from "./supabaseClient";
 
 // study-record テーブルから、すべてのレコードを取得する
 export const getAllTodos = async () => {
