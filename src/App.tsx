@@ -42,7 +42,7 @@ const onSubmit = async () => {
   // 入力値のバリデーション処理
   const error = () => {
     if (title === "" || time === 0) {
-      setError("入力されていない項目があります");
+      setError("入力されていない項目があります。");
       setRecords([]);
       return;
     } else if (title !== "" && time > 0) {
