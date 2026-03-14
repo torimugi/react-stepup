@@ -53,7 +53,7 @@ const onSubmit = async () => {
 error();
 };
 
-// データを取得する
+// データ取得する
   const fetchData = async () => {
     const { data, error } = await supabase
       .from('study-record')
@@ -89,7 +89,7 @@ error();
 }
 , []);
 if (isLoading) {
-  return <div>Loading...</div>; // ローディング状態であればLoading...を表示
+  return <div>Loading....</div>; // ローディング状態であればLoading...を表示
 }
 
 const totalStudyTime = records.reduce((total, record) => {
