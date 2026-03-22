@@ -89,7 +89,7 @@ error();
 }
 , []);
 if (isLoading) {
-  return <div>Loading....</div>; // ローディング状態であればLoading...を表示
+  return <div>Loading...</div>; // ローディング状態であればLoading...を表示
 }
 
 const totalStudyTime = records.reduce((total, record) => {
