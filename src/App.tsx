@@ -55,14 +55,20 @@ error();
 
 // データ取得する
   const fetchData = async () => {
-    const { data, error } = await supabase
-      .from('study-record')
-      .select('*');
-    if (error) {
-      console.log("data:", data); 
-      return;
+    try {
+      const { data, error } = await supabase
+        .from('study-record')
+        .select('*');
+      if (error) {
+        console.error("データ取得エラー:", error);
+        return false;
+      }
+      setRecords(data || []);
+      return true;
+    } catch (err) {
+      console.error("データ取得に失敗:", err);
+      return false;
     }
-    setRecords(data);
   };
   
   useEffect(() => {
@@ -78,16 +84,16 @@ error();
 
   // ローディング状態を表示
   useEffect(() => {
-    const getIsTodo = async () => { // 非同期処理を定義する関数
-      setLoading(true); // データを取得する前にローディング状態にする
-      const todoDate = await fetchData(); // データを取得するまで待つ
-      setLoading(false);
-      return todoDate;
-      // データを取得した後にローディング状態を解除する
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await fetchData();
+      } finally {
+        setLoading(false);
+      }
     };
-    getIsTodo(); // 非同期処理を実行する関数
-}
-, []);
+    loadData();
+  }, []);
 if (isLoading) {
   return <div>Loading...</div>; // ローディング状態であればLoading...を表示
 }
