@@ -106,8 +106,8 @@ const totalStudyTime = records.reduce((total, record) => {
 <div>
 <h1>学習記録一覧アプリ</h1>
   <div>
- <div>学習内容<input type="text" value={title} onChange={handleChangeTitle}/></div>
- <div>学習時間<input type="number" value={time} onChange={handleChangeTime}/>時間</div>
+ <div><label>学習内容<input type="text" value={title} onChange={handleChangeTitle}/></label></div>
+ <div><label>学習時間<input type="number" value={time} onChange={handleChangeTime}/></label>時間</div>
  <div>入力されている学習内容：{title}</div>
  <div>入力されている時間：{time}時間</div>
  {records.map((record) => {

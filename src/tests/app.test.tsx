@@ -1,7 +1,21 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
+
+// Supabaseのモック設定
+vi.mock('@supabase/supabase-js', () => {
+  return {
+    createClient: vi.fn(() => ({
+      from: vi.fn(() => ({
+        // selectの戻り値を空配列でシミュレート
+        select: vi.fn().mockResolvedValue({ data: [], error: null }),
+        // insert(登録)の成功をシミュレート
+        insert: vi.fn().mockResolvedValue({ data: null, error: null }),
+      })),
+    })),
+  };
+});
 
 /**
  * ┌─────────────────────────────────────────────────────────┐
@@ -119,5 +133,42 @@ describe("📚 学習記録一覧アプリ - Appコンポーネント", () => {
     // 最初はローディングが表示されていることを確認
     const loading = screen.getByText("Loading...");
     expect(loading).toBeInTheDocument();
+  });
+
+  //タイトルが表示されている
+  it ("タイトルが表示されている", async () => {
+    render(<App />);
+    await waitFor(() => {
+      const title = screen.getByText("学習記録一覧アプリ");
+      expect(title).toBeInTheDocument();
+    });
+  });
+
+  
+// フォームに学習内容と時間を入力して登録ボタンを押すと新たに記録が追加されている 数が1つ増えていることをテストする
+it("フォームに学習内容と時間を入力して登録ボタンを押すと新たに記録が追加されている", async () => {
+    render(<App />); 
+
+    // 1. Loadingが終わるのを待つ
+    await waitFor(() => {
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+
+    // 2. ラベルが表示されるのを待つ
+    const titleInput = screen.getByLabelText("学習内容");
+    const timeInput = screen.getByLabelText("学習時間");
+    const button = screen.getByRole("button", { name: "登録" });
+
+    // 3. 入力
+    await userEvent.type(titleInput, "Reactの勉強");
+    await userEvent.type(timeInput, "3");
+
+    // 4. ボタンをクリック
+    await userEvent.click(button);
+
+    // 5. 新たに記録が追加されていることを確認
+    // ※ 登録後に画面に「Reactの勉強」という文字が出ることを確認するのが一般的です
+    const newRecord = await screen.findByText(/Reactの勉強/);
+    expect(newRecord).toBeInTheDocument();
   });
 });
