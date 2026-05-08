@@ -75,12 +75,14 @@ error();
     fetchData();
   }, []);
 
-  // 削除処理
-  const handleDeleteTodo = async(id: number) => {
-    await deleteTodo(id);
-    const newDelete = records.filter((record) => record.id !== id);
-    setRecords(newDelete);
-  };
+const handleDeleteTodo = async(id: number) => {
+  console.log("削除ボタンが押されました。ID:", id);
+  await deleteTodo(id);
+  console.log("DBからの削除が終わりました。");
+  const newDelete = records.filter((record) => record.id !== id);
+  setRecords(newDelete);
+  console.log("ステートを更新しました。");
+};
 
   // ローディング状態を表示
   useEffect(() => {

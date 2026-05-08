@@ -3,16 +3,33 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
 
-// Supabaseのモック設定
+// Supabaseのクライアントを定義しているファイルを直接モックするのが一番確実です
+// もし App.tsx 内で createClient している場合はそのまま library 名でOK
 vi.mock('@supabase/supabase-js', () => {
+  // 1. まず、どんなメソッドを呼ばれても「自分自身」を返す万能な偽物オブジェクトを作ります
+  const mockSupabaseQuery = {
+    select: vi.fn().mockReturnThis(),
+    insert: vi.fn().mockReturnThis(),
+    delete: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    order: vi.fn().mockReturnThis(),
+    
+    // 2. 最後に await (Promise) された時に返す値を設定します
+    // これが「通信成功！データはこれだよ！」という返事になります
+    then: vi.fn((onFulfilled) => {
+      return Promise.resolve(
+        onFulfilled({ 
+          data: [],
+          error: null 
+        })
+      );
+    }),
+  };
+
   return {
     createClient: vi.fn(() => ({
-      from: vi.fn(() => ({
-        // selectの戻り値を空配列でシミュレート
-        select: vi.fn().mockResolvedValue({ data: [], error: null }),
-        // insert(登録)の成功をシミュレート
-        insert: vi.fn().mockResolvedValue({ data: null, error: null }),
-      })),
+      // どこから始まっても、上の万能オブジェクトにつながるようにします
+      from: vi.fn(() => mockSupabaseQuery),
     })),
   };
 });
@@ -117,10 +134,10 @@ describe("📚 学習記録一覧アプリ - Appコンポーネント", () => {
     render(<App />);
 
     // ローディングが終わるまで待つ
-    await waitFor(() => {
+    await waitFor(async () => {
       // 合計時間が0であることを確認
-      const totalTime = screen.getByText(/合計時間：0\/1000/);
-      expect(totalTime).toBeInTheDocument();
+      const totalTime = await screen.findByText(/合計時間：/);
+      expect(totalTime).toHaveTextContent("0/1000");
     });
   });
 
@@ -135,15 +152,19 @@ describe("📚 学習記録一覧アプリ - Appコンポーネント", () => {
     expect(loading).toBeInTheDocument();
   });
 
-  //タイトルが表示されている
-  it ("タイトルが表示されている", async () => {
-    render(<App />);
-    await waitFor(() => {
-      const title = screen.getByText("学習記録一覧アプリ");
-      expect(title).toBeInTheDocument();
-    });
-  });
 
+  // タイトルが表示されている
+  it("タイトルが表示されている", async () => {
+    render(<App />);
+    // 1. Loadingが終わるのを待つ
+    await waitFor(() => {
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+
+    // 2. タイトルが表示されている
+    const title = screen.getByText("学習記録一覧アプリ");
+    expect(title).toBeInTheDocument();
+  });
   
 // フォームに学習内容と時間を入力して登録ボタンを押すと新たに記録が追加されている 数が1つ増えていることをテストする
 it("フォームに学習内容と時間を入力して登録ボタンを押すと新たに記録が追加されている", async () => {
@@ -171,4 +192,39 @@ it("フォームに学習内容と時間を入力して登録ボタンを押す�
     const newRecord = await screen.findByText(/Reactの勉強/);
     expect(newRecord).toBeInTheDocument();
   });
+
+  // ✅ 削除ボタンを押すと学習記録が削除される 数が1つ減っていることをテストする
+  it("削除ボタンを押すと学習記録が削除される", async () => {
+    render(<App />);
+
+        // 1. Loadingが終わるのを待つ
+    await waitFor(() => {
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+
+        // 2. ラベルが表示されるのを待つ
+    const titleInput = screen.getByLabelText("学習内容");
+    const timeInput = screen.getByLabelText(/学習時間/);
+    const registerButton = screen.getByRole("button", { name: "登録" });
+
+        // 3. 入力
+    await userEvent.type(titleInput, "Reactの勉強");
+    await userEvent.type(timeInput, "3");
+
+        // 3. 登録ボタンをクリック
+    await userEvent.click(registerButton);
+
+        // 4. 「削除」ボタンが存在するか
+          const deleteButton = await screen.findByRole("button", { name: "削除" });
+        expect(screen.queryByText(/Reactの勉強/)).toBeInTheDocument();
+
+          // 5. ボタンをクリック
+    await userEvent.click(deleteButton);
+
+    // 6. 記録が削除される
+    await waitFor(() => {
+        expect(screen.queryByText(/Reactの勉強/)).not.toBeInTheDocument();
+  });
 });
+});
+
