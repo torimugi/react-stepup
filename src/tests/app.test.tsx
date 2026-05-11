@@ -228,3 +228,20 @@ it("フォームに学習内容と時間を入力して登録ボタンを押す�
 });
 });
 
+// ✅ 入力をしないで登録を押すとエラーが表示される
+  it("入力をしないで登録を押すとエラーが表示される", async () => {    
+  render(<App />);
+
+        // 1. Loadingが終わるのを待つ
+    await waitFor(async () => {
+        expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+
+        // 2. 登録ボタンをクリック
+        const registerButton = screen.getByRole("button", { name: "登録" });
+        await userEvent.click(registerButton);
+
+        // 3. エラー表示
+         const errorMessage = screen.getByText("入力されていない項目があります。");
+        expect(errorMessage).toBeInTheDocument();
+    });
+      });
