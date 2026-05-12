@@ -245,3 +245,6 @@ it("フォームに学習内容と時間を入力して登録ボタンを押す�
         expect(errorMessage).toBeInTheDocument();
     });
       });
+
+      // ✅ パイプラインにCIのステップを追加する
+      
