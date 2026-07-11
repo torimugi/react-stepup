@@ -20,14 +20,20 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error, status } = await supabase
         .from("study_record")
         .select("id, title, time");
 
+console.log({ data, error, status })
+
       if (error) {
-        console.error("データ取得エラー:", error);
-        setError("データ取得に失敗しました。");
-        return false;
+  console.error({
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+    code: error.code,
+  });
+          
       }
 
       setRecords((data ?? []) as StudyRecord[]);
