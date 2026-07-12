@@ -101,7 +101,7 @@ function App() {
       console.log("ステートを更新しました。");
     } catch (err) {
       console.error("削除に失敗:", err);
-      setError("削除に失敗しました。");
+      setError("削除に失敗しました");
     } finally {
       setLoading(false);
     }
