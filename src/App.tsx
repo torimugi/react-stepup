@@ -4,36 +4,37 @@ import { insertTodo, deleteTodo } from "./utils/supabaseData";
 import type { StudyRecord } from "./domain/record";
 
 function App() {
+  // 学習記録の一覧・入力値・エラー・読み込み状態を管理する
   const [records, setRecords] = useState<StudyRecord[]>([]);
   const [title, setTitle] = useState<string>("");
   const [time, setStudyTime] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
 
+  // 学習内容の入力値をstateに反映する
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
 
+  // 学習時間の入力値を数値に変換してstateに反映する
   const handleChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
     setStudyTime(Number(e.target.value));
   };
 
+  // Supabaseから学習記録を取得する
   const fetchData = async () => {
     try {
-      const { data, error, status } = await supabase
+      const { data, error } = await supabase
         .from("study_record")
         .select("id, title, time");
 
-console.log({ data, error, status })
-
       if (error) {
-  console.error({
-    message: error.message,
-    details: error.details,
-    hint: error.hint,
-    code: error.code,
-  });
-          
+        console.error({
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        });
       }
 
       setRecords((data ?? []) as StudyRecord[]);
@@ -45,6 +46,7 @@ console.log({ data, error, status })
     }
   };
 
+  // 初回表示時に学習記録を読み込む
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -58,6 +60,7 @@ console.log({ data, error, status })
     loadData();
   }, []);
 
+  // 入力内容を検証し、学習記録を登録する
   const onSubmit = async () => {
     if (title.trim() === "" || time <= 0) {
       setError("入力されていない項目があります。");
@@ -82,6 +85,7 @@ console.log({ data, error, status })
     }
   };
 
+  // 指定したIDの学習記録を削除し、画面の一覧も更新する
   const handleDeleteTodo = async (id: string) => {
     try {
       setLoading(true);
@@ -103,10 +107,12 @@ console.log({ data, error, status })
     }
   };
 
+  // 学習時間の合計を計算する
   const totalStudyTime = records.reduce((total, record) => {
     return total + record.time;
   }, 0);
 
+  // 読み込み中はローディング表示に切り替える
   if (isLoading) {
     return <div>Loading...</div>;
   }
